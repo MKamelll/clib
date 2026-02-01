@@ -140,6 +140,27 @@ long long clib_string_rfind(String *str, String *sub) {
     return -1;
 }
 
+String *clib_string_substring(String *str, size_t start, size_t end) {
+    str->data += start;
+    str->len -= start;
+    str->data[end] = '\0';
+    str->len -= clib_string_len(str) - end;
+    return str;
+}
+
+size_t clib_string_count(String *str, String *sub) {
+    size_t count = 0;
+    while (clib_string_len(str) >= 0) {
+        long long idx = clib_string_find(str, sub);
+        if (idx == -1)
+            break;
+        count++;
+        str = clib_string_substring(str, idx + clib_string_len(sub),
+                                    clib_string_len(str));
+    }
+    return count;
+}
+
 void clib_string_free(String *str) {
     assert(str != NULL);
     free(str->data);
@@ -160,9 +181,9 @@ int main(int argc, char **argv) {
     }
 
     String *str = clib_string_create("fuck off");
-    String *sub = clib_string_create("of");
+    String *sub = clib_string_create("k");
     clib_string_print(str);
-    printf("%lld\n", clib_string_rfind(str, sub));
+    printf("%zu\n", clib_string_count(str, sub));
 
     return 0;
 }
