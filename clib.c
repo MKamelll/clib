@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <ctype.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -150,7 +151,7 @@ String *clib_string_substring(String *str, size_t start, size_t end) {
 
 size_t clib_string_count(String *str, String *sub) {
     size_t count = 0;
-    while (clib_string_len(str) >= 0) {
+    while (clib_string_len(str) != 0) {
         long long idx = clib_string_find(str, sub);
         if (idx == -1)
             break;
@@ -159,6 +160,15 @@ size_t clib_string_count(String *str, String *sub) {
                                     clib_string_len(str));
     }
     return count;
+}
+
+bool clib_string_startswith(String *str, String *prefix) {
+    return clib_string_find(str, prefix) == 0;
+}
+
+bool clib_string_endswith(String *str, String *suffix) {
+    return (clib_string_rfind(str, suffix) + clib_string_len(suffix)) >=
+           clib_string_len(str);
 }
 
 void clib_string_free(String *str) {
@@ -181,9 +191,9 @@ int main(int argc, char **argv) {
     }
 
     String *str = clib_string_create("fuck off");
-    String *sub = clib_string_create("k");
+    String *sub = clib_string_create("kff");
     clib_string_print(str);
-    printf("%zu\n", clib_string_count(str, sub));
+    printf("%b\n", clib_string_endswith(str, sub));
 
     return 0;
 }
