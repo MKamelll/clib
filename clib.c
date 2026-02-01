@@ -88,10 +88,64 @@ String *clib_string_trim(String *str) {
     return str;
 }
 
+long long clib_string_find(String *str, String *sub) {
+    size_t i = 0;
+    size_t j = 0;
+
+    while (i < clib_string_len(str)) {
+        if (str->data[i] == sub->data[j]) {
+            long long ii = i;
+            while (j < clib_string_len(sub)) {
+                if (str->data[ii] != sub->data[j]) {
+                    j = 0;
+                    break;
+                }
+                ii++;
+                j++;
+            }
+
+            if (j >= clib_string_len(sub)) {
+                return ii - clib_string_len(sub);
+            }
+        }
+        i++;
+    }
+
+    return -1;
+}
+
+long long clib_string_rfind(String *str, String *sub) {
+    long long i = clib_string_len(str) - 1;
+    long long j = clib_string_len(sub) - 1;
+
+    while (i >= 0) {
+        if (str->data[i] == sub->data[j]) {
+            long long ii = i;
+            while (j >= 0) {
+                if (str->data[ii] != sub->data[j]) {
+                    j = clib_string_len(sub) - 1;
+                    break;
+                }
+                ii--;
+                j--;
+            }
+
+            if (j <= 0) {
+                return ii + 1;
+            }
+        }
+        i--;
+    }
+
+    return -1;
+}
+
 void clib_string_free(String *str) {
     assert(str != NULL);
     free(str->data);
+    str->data = NULL;
     free(str);
+    str = NULL;
 }
 
 void clib_string_print(String *str) {
@@ -105,10 +159,10 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    String *str = clib_string_create("         fuck off           ");
-    str = clib_string_trim(str);
+    String *str = clib_string_create("fuck off");
+    String *sub = clib_string_create("of");
     clib_string_print(str);
-    printf("%zu\n", clib_string_len(str));
+    printf("%lld\n", clib_string_rfind(str, sub));
 
     return 0;
 }
