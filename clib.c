@@ -227,6 +227,16 @@ bool clib_string_is_upper(String *str) {
     return true;
 }
 
+bool clib_string_is_space(String *str) {
+    size_t i = 0;
+    while (i < clib_string_len(str)) {
+        if (!isspace(str->data[i]))
+            return false;
+        i++;
+    }
+    return true;
+}
+
 void clib_string_free(String *str) {
     assert(str != NULL);
     free(str->data);
@@ -246,10 +256,10 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    String *str = clib_string_create("TTTTOIIG");
+    String *str = clib_string_create("          ");
     String *sub = clib_string_create("kff");
     clib_string_print(str);
-    printf("%b\n", clib_string_is_upper(str));
+    printf("%b\n", clib_string_is_space(str));
 
     return 0;
 }
