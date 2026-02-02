@@ -171,6 +171,42 @@ bool clib_string_endswith(String *str, String *suffix) {
            clib_string_len(str);
 }
 
+bool clib_string_is_alpha(String *str) {
+    size_t i = 0;
+    while (i < clib_string_len(str)) {
+        bool is_lower_case = str->data[i] >= 'a' && str->data[i] <= 'z';
+        bool is_upper_case = str->data[i] >= 'A' && str->data[i] <= 'Z';
+        if (!is_lower_case && !is_upper_case)
+            return false;
+        i++;
+    }
+    return true;
+}
+
+bool clib_string_is_numeric(String *str) {
+    size_t i = 0;
+    while (i < clib_string_len(str)) {
+        bool is_digit = str->data[i] >= '0' && str->data[i] <= '9';
+        if (!is_digit)
+            return false;
+        i++;
+    }
+    return true;
+}
+
+bool clib_string_is_alphanumeric(String *str) {
+    size_t i = 0;
+    while (i < clib_string_len(str)) {
+        bool is_lower_case = str->data[i] >= 'a' && str->data[i] <= 'z';
+        bool is_upper_case = str->data[i] >= 'A' && str->data[i] <= 'Z';
+        bool is_digit = str->data[i] >= '0' && str->data[i] <= '9';
+        if (!is_digit && !is_lower_case && !is_upper_case)
+            return false;
+        i++;
+    }
+    return true;
+}
+
 void clib_string_free(String *str) {
     assert(str != NULL);
     free(str->data);
@@ -190,10 +226,10 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    String *str = clib_string_create("fuck off");
+    String *str = clib_string_create("tjg;ljd345s");
     String *sub = clib_string_create("kff");
     clib_string_print(str);
-    printf("%b\n", clib_string_endswith(str, sub));
+    printf("%b\n", clib_string_is_alphanumeric(str));
 
     return 0;
 }
