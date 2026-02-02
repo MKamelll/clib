@@ -207,6 +207,26 @@ bool clib_string_is_alphanumeric(String *str) {
     return true;
 }
 
+bool clib_string_is_lower(String *str) {
+    size_t i = 0;
+    while (i < clib_string_len(str)) {
+        if (!islower(str->data[i]))
+            return false;
+        i++;
+    }
+    return true;
+}
+
+bool clib_string_is_upper(String *str) {
+    size_t i = 0;
+    while (i < clib_string_len(str)) {
+        if (!isupper(str->data[i]))
+            return false;
+        i++;
+    }
+    return true;
+}
+
 void clib_string_free(String *str) {
     assert(str != NULL);
     free(str->data);
@@ -226,10 +246,10 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    String *str = clib_string_create("tjg;ljd345s");
+    String *str = clib_string_create("TTTTOIIG");
     String *sub = clib_string_create("kff");
     clib_string_print(str);
-    printf("%b\n", clib_string_is_alphanumeric(str));
+    printf("%b\n", clib_string_is_upper(str));
 
     return 0;
 }
