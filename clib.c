@@ -62,18 +62,39 @@ void clib_array_pop(ClibArray *arr) {
     arr->size--;
 }
 
-void *clib_array_get(ClibArray *arr, long long index) {
-    if (!arr) {
-        fprintf(stderr, "%s\n", "ClibArray: Array is not initialized");
-        exit(1);
-    }
+static void clib_array_check_bounds(ClibArray *arr, long long index) {
     if (index < 0 || index >= arr->size) {
         fprintf(stderr, "%s: '%lld' of array size: '%lld'\n",
                 "ClibArray: Index is out of bounds", index, arr->size);
         exit(1);
     }
+}
+
+void *clib_array_get(ClibArray *arr, long long index) {
+    if (!arr) {
+        fprintf(stderr, "%s\n", "ClibArray: Array is not initialized");
+        exit(1);
+    }
+
+    clib_array_check_bounds(arr, index);
+    
     void *elm = (char *)arr->data + (arr->elm_size * index);
     return elm;
+}
+
+bool clib_array_is_empty(ClibArray *arr) { return arr->size <= 0; }
+
+long long clib_array_size(ClibArray *arr) { return arr->size; }
+
+void clib_array_remove_at(ClibArray *arr, long long index) {
+    clib_array_check_bounds(arr, index);
+    if (index < arr->size - 1) {
+        void *dest = (char *)arr->data + (arr->elm_size * index);
+        void *src = (char *)dest + arr->elm_size;
+        size_t size = (arr->size - index - 1) * arr->elm_size;
+        memmove(dest, src, size);
+    }
+    arr->size--;
 }
 
 void clib_array_free(ClibArray *arr) {
@@ -336,7 +357,10 @@ int main(int argc, char **argv) {
     ClibArray *arr = clib_array_create(sizeof(ClibString));
     ClibString *str = clib_string_create("fuck off");
     clib_array_push(arr, str);
-    clib_string_print((ClibString *)clib_array_get(arr, 1));
+    clib_string_print((ClibString *)clib_array_get(arr, 0));
 
+    clib_array_remove_at(arr, 1);
+    clib_string_print((ClibString *)clib_array_get(arr, 0));
+    
     return 0;
 }
